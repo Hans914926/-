@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <math.h>
+int main(){
+	int n=5;
+	int i,j,k;
+	int b[n+5];
+	int num,den;
+	double q[2*n+1]={0};
+	double P[2*n]={0};
+	int rank;
+	int rounds_max[n+1][n+1];//虫初程ㄓ初计 
+	int rounds_best[n+1][n+1];//程ㄎㄓ初计 
+	int rounds_again[n+1][n+1][2];//癹伴禲ㄓ初计(0㎝rounds_max) 
+	int max=1;//﹍程ㄓ初计 
+	double E=0;
+	double E_num=0;
+	double E_den=0;
+	double E_max[n+1]={0};
+	
+	for(i=1;i<=n;i++){ 
+		for(j=1;j<=n;j++){
+			rounds_again[i][j][0]=0;
+		}
+	}
+	while(1){
+		max=1;//穝兵ン 
+		for(i=1;i<=2*n;i++){//籹q 
+			q[i]=0;
+		}
+		
+		for(i=1;i<=n;i++){
+			printf("单%d瞷诀瞯(だだダ)\n",i);
+			scanf(" %d %d",&num,&den);
+			P[i]=(double)num/den;
+		}
+		
+		for(k=2;k<=2*n;k++){//衡q 
+			if(k-2>0){
+				for(i=1;i<=k-2;i++){
+					for(j=1;j<=i;j++){
+						q[k]+=P[j]*P[i+1-j];
+					}
+				}
+			}
+			for(i=1;i<=k-1;i++){
+				q[k]+=P[i]*P[k-i]/2;
+			}
+		}
+		while(max!=0){
+			for(i=1;i<=n;i++){
+				E_max[i]=0;
+			}
+			
+			printf("程ㄓ初初计?(0籹诀瞯)\n");
+			scanf("%d",&max);
+			for(i=1;i<=n;i++){
+				for(j=1;j<=n;j++){
+					rounds_max[i][j]=max;
+					rounds_again[i][j][1]=rounds_max[i][j];
+				}
+			}
+			
+			for(rank=n;rank>=1;rank--){//т郸菠 
+				for(b[1]=0;b[1]<=1;b[1]++){
+					for(b[2]=0;b[2]<=1;b[2]++){
+						for(b[3]=0;b[3]<=1;b[3]++){
+							for(b[4]=0;b[4]<=1;b[4]++){
+								for(b[5]=0;b[5]<=1;b[5]++){
+										E_num=0;
+										E_den=0;
+										E=0;
+										for(j=1;j<=n;j++){
+											E_num+=(double)(1+rounds_again[rank][j][b[j]])*P[j]*q[rank+j];
+											E_den+=(double)(1+rounds_again[rank][j][b[j]])*P[j];
+											E=(double)E_num/E_den;
+										}
+										if(E>E_max[rank]){
+											E_max[rank]=E;
+											for(k=1;k<=n;k++){//蔼单单 
+												rounds_best[rank][k]=rounds_again[rank][k][b[k]];
+												if(rank>k){
+													rounds_max[k][rank]=rounds_again[rank][k][b[k]];
+													rounds_again[k][rank][1]=rounds_max[k][rank];
+												}
+											}								
+										}
+									
+									
+								}
+							}
+						}
+					}
+				}
+			}
+			if(fabs(E_max[3]-0.5)<0.00001&&rounds_best[3][5]==0&&rounds_best[3][4]==0){
+				rounds_best[3][3]=max;
+			}
+			printf("绢琌钉ね单琌ō单\n");//陪ボ单ㄓ初程ㄎ计 
+			for(i=1;i<=n;i++){
+				printf("\t%d",i);
+			}
+			printf("\n");
+			for(i=1;i<=n;i++){
+				printf("%d\t",i);
+				for(j=1;j<=n;j++){
+					printf("%d\t",rounds_best[i][j]);
+				}
+				printf("\n");
+			}
+			
+			printf("单程E\n");//陪ボ单程ㄎE
+			for(i=1;i<=n;i++){
+					printf("%d\t%.10f\n",i,E_max[i]);
+			}
+		}
+	}
+	return 0;
+	
+}
